@@ -9,7 +9,7 @@ import {
 } from '@nextui-org/react'
 
 import { Avatar } from '@/src/components/Avatar'
-import { useUser } from '@/src/providers/UserProvider'
+import { useUser } from '@/src/hooks/useUser'
 
 export default function Dropdown() {
   const user = useUser()

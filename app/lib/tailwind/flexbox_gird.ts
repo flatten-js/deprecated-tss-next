@@ -1,4 +1,4 @@
-import { TailwindClass } from "."
+import { TailwindClass } from "./utils"
 
 export type GridCol = 3 | 4 | 6 | 12
 export type GridCols = Extract<GridCol, 12>
