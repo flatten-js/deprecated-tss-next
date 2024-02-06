@@ -4,13 +4,15 @@ services:
     ports:
       - 127.0.0.1:3000:3000
     environment:
-      DATABASE_URL: "${DATABASE_URL}"
+      DATABASE_URL: "${APP_DATABASE_URL}"
     volumes:
       - ./app:/app
       - app_node_modules:/app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
+      setup:
+        condition: service_completed_successfully
   
   storybook:
     image: node:20
@@ -19,20 +21,22 @@ services:
     ports:
       - 127.0.0.1:6006:6006
     environment:
-      DATABASE_URL: "${DATABASE_URL}"
+      DATABASE_URL: "${APP_DATABASE_URL}"
     volumes:
       - "./app:/app"
       - app_node_modules:/app/node_modules
-  
+    depends_on:
+      mysql:
+        condition: service_healthy
+      setup:
+        condition: service_completed_successfully
+      
   mysql:
     image: mysql:8
     environment:
-      MYSQL_DATABASE: "${MYSQL_DATABASE}"
-      MYSQL_USER: "${MYSQL_USER}"
-      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
-      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: root
     volumes:
-      - ./data/mysql:/var/lib/mysql
+      - mysql:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
       interval: 30s
@@ -40,5 +44,14 @@ services:
       retries: 6
       start_period: 30s
 
+  setup:
+    build: ./setup
+    volumes:
+      - .:/app
+    depends_on:
+      mysql:
+        condition: service_healthy
+
 volumes:
   app_node_modules:
+  mysql:
