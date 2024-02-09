@@ -7,7 +7,10 @@ export const env = createEnv({
     NEXTAUTH_SECRET: z.string().min(1),
     GOOGLE_CLIENT_ID: z.string().min(1),
     GOOGLE_CLIENT_SECRET: z.string().min(1),
-    DATABASE_URL: z.string().url()
+    DATABASE_URL: z.string().url(),
+    MONGODB_URI: z.string().url(),
+    PAYLOAD_SECRET: z.string().min(1),
+    PAYLOAD_CONFIG_PATH: z.string().min(1)
   },
   client: {}
 })
